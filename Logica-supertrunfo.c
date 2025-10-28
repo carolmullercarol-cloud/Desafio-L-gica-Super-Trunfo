@@ -1,139 +1,205 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
+/*
+    Super Trunfo Avançado - Comparação por dois atributos
+
+    Funcionalidades principais:
+    - Cadastro de duas cartas (países) com os atributos:
+        nome, população (unsigned long int), área (float),
+        PIB (float) e número de pontos turísticos (int).
+    - Cálculo da densidade demográfica (população / área).
+    - Menus dinâmicos (switch) para escolher dois atributos distintos.
+    - Comparação por atributo (densidade: menor vence; demais: maior vence).
+    - Soma dos valores dos dois atributos para definir o vencedor final.
+    - Tratamento básico de entradas inválidas (opções fora do intervalo).
+    - Código comentado e organizado.
+*/
+
+/* Enum para facilitar referência aos atributos com nomes legíveis */
+enum ATTR {
+    ATTR_POPULACAO = 1,
+    ATTR_AREA = 2,
+    ATTR_PIB = 3,
+    ATTR_PONTOS = 4,
+    ATTR_DENSIDADE = 5
+};
+
+/* Estrutura que representa uma carta (país) */
+struct Carta {
+    char nome[100];                  // Nome do país/cidade
+    unsigned long int populacao;     // População (tipo aumentado para grandes valores)
+    float area;                      // Área em km²
+    float pib;                       // PIB (unidade: conforme entrada, por ex. bilhões)
+    int pontosTuristicos;            // Número de pontos turísticos
+
+    float densidade;                 // Densidade calculada (habitantes/km²)
+};
+
+/* Retorna o valor numérico do atributo selecionado para a carta.
+   Todos os retornos são convertidos para double para facilitar soma e comparação. */
+double obter_valor_atributo(const struct Carta *c, int atributo) {
+    switch (atributo) {
+        case ATTR_POPULACAO:
+            return (double)c->populacao;      // População como número inteiro grande
+        case ATTR_AREA:
+            return (double)c->area;           // Área em km² (float -> double)
+        case ATTR_PIB:
+            return (double)c->pib;            // PIB (float -> double)
+        case ATTR_PONTOS:
+            return (double)c->pontosTuristicos; // Número de pontos turísticos
+        case ATTR_DENSIDADE:
+            return (double)c->densidade;     // Densidade (float -> double)
+        default:
+            return 0.0;
+    }
+}
+
+/* Retorna uma string com o nome legível do atributo (para exibição) */
+const char* nome_do_atributo(int atributo) {
+    switch (atributo) {
+        case ATTR_POPULACAO: return "Populacao";
+        case ATTR_AREA: return "Area (km^2)";
+        case ATTR_PIB: return "PIB";
+        case ATTR_PONTOS: return "Pontos Turisticos";
+        case ATTR_DENSIDADE: return "Densidade Demografica (hab/km^2)";
+        default: return "Atributo Desconhecido";
+    }
+}
+
 int main() {
-    // Cadastro das duas cartas (reaproveitado do nível anterior)
-    char pais1[50], pais2[50];
-    int populacao1, populacao2;
-    float area1, area2, pib1, pib2;
-    int pontosTuristicos1, pontosTuristicos2;
+    /* Declaração das duas cartas que serão comparadas */
+    struct Carta c1, c2;
 
-    float densidade1, densidade2;
-    float pibPerCapita1, pibPerCapita2;
+    /* --- CADASTRO DAS CARTAS ---
+       Aqui realizamos leitura simples dos atributos.
+       Usamos scanf com " %[^\n]" para permitir nomes com espaços.
+       Em um projeto maior, recomendamos usar fgets + parsing mais robusto.
+    */
 
-    printf("Cadastro da Carta 1:\n");
-    printf("Nome do pais: ");
-    scanf("%s", pais1);
+    printf("=== Cadastro da Carta 1 ===\n");
+    printf("Nome do pais (ex: Brasil): ");
+    scanf(" %[^\n]", c1.nome);
 
-    printf("Populacao: ");
-    scanf("%d", &populacao1);
+    printf("Populacao (numero inteiro, sem pontuacao): ");
+    if (scanf("%lu", &c1.populacao) != 1) { printf("Entrada invalida. Encerrando.\n"); return 1; }
 
-    printf("Area (km²): ");
-    scanf("%f", &area1);
+    printf("Area (km2): ");
+    if (scanf("%f", &c1.area) != 1) { printf("Entrada invalida. Encerrando.\n"); return 1; }
 
-    printf("PIB: ");
-    scanf("%f", &pib1);
+    printf("PIB (unidade conforme entrada, ex: bilhoes): ");
+    if (scanf("%f", &c1.pib) != 1) { printf("Entrada invalida. Encerrando.\n"); return 1; }
 
-    printf("Numero de pontos turisticos: ");
-    scanf("%d", &pontosTuristicos1);
+    printf("Numero de Pontos Turisticos: ");
+    if (scanf("%d", &c1.pontosTuristicos) != 1) { printf("Entrada invalida. Encerrando.\n"); return 1; }
 
-    printf("\nCadastro da Carta 2:\n");
-    printf("Nome do pais: ");
-    scanf("%s", pais2);
+    printf("\n=== Cadastro da Carta 2 ===\n");
+    printf("Nome do pais (ex: Argentina): ");
+    scanf(" %[^\n]", c2.nome);
 
-    printf("Populacao: ");
-    scanf("%d", &populacao2);
+    printf("Populacao (numero inteiro, sem pontuacao): ");
+    if (scanf("%lu", &c2.populacao) != 1) { printf("Entrada invalida. Encerrando.\n"); return 1; }
 
-    printf("Area (km²): ");
-    scanf("%f", &area2);
+    printf("Area (km2): ");
+    if (scanf("%f", &c2.area) != 1) { printf("Entrada invalida. Encerrando.\n"); return 1; }
 
-    printf("PIB: ");
-    scanf("%f", &pib2);
+    printf("PIB (unidade conforme entrada, ex: bilhoes): ");
+    if (scanf("%f", &c2.pib) != 1) { printf("Entrada invalida. Encerrando.\n"); return 1; }
 
-    printf("Numero de pontos turisticos: ");
-    scanf("%d", &pontosTuristicos2);
+    printf("Numero de Pontos Turisticos: ");
+    if (scanf("%d", &c2.pontosTuristicos) != 1) { printf("Entrada invalida. Encerrando.\n"); return 1; }
 
-    // Cálculos base
-    densidade1 = populacao1 / area1;
-    densidade2 = populacao2 / area2;
-    pibPerCapita1 = pib1 / populacao1;
-    pibPerCapita2 = pib2 / populacao2;
+    /* --- CÁLCULO DA DENSIDADE ---
+       Protegemos contra divisão por zero (área <= 0).
+       Se a área for inválida, definimos densidade como 0 e avisamos o usuário.
+    */
+    if (c1.area > 0.0f) {
+        c1.densidade = (float)((double)c1.populacao / (double)c1.area);
+    } else {
+        c1.densidade = 0.0f;
+        printf("\nAviso: Area da Carta 1 invalida (<= 0). Densidade definida para 0.\n");
+    }
 
-    // Menu interativo
-    int opcao;
+    if (c2.area > 0.0f) {
+        c2.densidade = (float)((double)c2.populacao / (double)c2.area);
+    } else {
+        c2.densidade = 0.0f;
+        printf("Aviso: Area da Carta 2 invalida (<= 0). Densidade definida para 0.\n");
+    }
 
-    printf("\n===== MENU DE COMPARACAO =====\n");
-    printf("Escolha o atributo para comparar:\n");
+    /* --- MENU DINÂMICO: Escolha de dois atributos distintos ---
+       Primeiro apresentamos o menu completo e lemos a primeira escolha.
+       Depois mostramos o segundo menu sem a opção já escolhida.
+       Tratamos entradas inválidas com mensagens e encerramento gracioso.
+    */
+
+    int escolha1 = 0;
+    printf("\n===== MENU: Escolha o primeiro atributo =====\n");
     printf("1 - Populacao\n");
-    printf("2 - Area\n");
+    printf("2 - Area (km2)\n");
     printf("3 - PIB\n");
     printf("4 - Pontos Turisticos\n");
     printf("5 - Densidade Demografica\n");
-    printf("\nOpcao: ");
-    scanf("%d", &opcao);
+    printf("Opcao (1-5): ");
+    if (scanf("%d", &escolha1) != 1) { printf("Entrada invalida. Encerrando.\n"); return 1; }
+    if (escolha1 < 1 || escolha1 > 5) { printf("Opcao invalida. Encerrando.\n"); return 1; }
 
-    printf("\nComparando %s e %s...\n\n", pais1, pais2);
-
-    switch(opcao) {
-        case 1:
-            printf("Atributo: Populacao\n");
-            printf("%s: %d habitantes\n", pais1, populacao1);
-            printf("%s: %d habitantes\n", pais2, populacao2);
-
-            if (populacao1 > populacao2)
-                printf("Resultado: %s venceu!\n", pais1);
-            else if (populacao2 > populacao1)
-                printf("Resultado: %s venceu!\n", pais2);
-            else
-                printf("Resultado: Empate!\n");
-            break;
-
-        case 2:
-            printf("Atributo: Area\n");
-            printf("%s: %.2f km²\n", pais1, area1);
-            printf("%s: %.2f km²\n", pais2, area2);
-
-            if (area1 > area2)
-                printf("Resultado: %s venceu!\n", pais1);
-            else if (area2 > area1)
-                printf("Resultado: %s venceu!\n", pais2);
-            else
-                printf("Resultado: Empate!\n");
-            break;
-
-        case 3:
-            printf("Atributo: PIB\n");
-            printf("%s: %.2f trilhoes\n", pais1, pib1);
-            printf("%s: %.2f trilhoes\n", pais2, pib2);
-
-            if (pib1 > pib2)
-                printf("Resultado: %s venceu!\n", pais1);
-            else if (pib2 > pib1)
-                printf("Resultado: %s venceu!\n", pais2);
-            else
-                printf("Resultado: Empate!\n");
-            break;
-
-        case 4:
-            printf("Atributo: Pontos Turisticos\n");
-            printf("%s: %d\n", pais1, pontosTuristicos1);
-            printf("%s: %d\n", pais2, pontosTuristicos2);
-
-            if (pontosTuristicos1 > pontosTuristicos2)
-                printf("Resultado: %s venceu!\n", pais1);
-            else if (pontosTuristicos2 > pontosTuristicos1)
-                printf("Resultado: %s venceu!\n", pais2);
-            else
-                printf("Resultado: Empate!\n");
-            break;
-
-        case 5:
-            printf("Atributo: Densidade Demografica\n");
-            printf("%s: %.2f hab/km²\n", pais1, densidade1);
-            printf("%s: %.2f hab/km²\n", pais2, densidade2);
-
-            if (densidade1 < densidade2)
-                printf("Resultado: %s venceu! (menor densidade)\n", pais1);
-            else if (densidade2 < densidade1)
-                printf("Resultado: %s venceu! (menor densidade)\n", pais2);
-            else
-                printf("Resultado: Empate!\n");
-            break;
-
-        default:
-            printf("Opcao invalida! Selecione entre 1 e 5.\n");
-            break;
+    /* Constrói array com atributos restantes (exclui escolha1) para menu dinâmico */
+    int restantes[4];
+    int idx = 0;
+    for (int a = 1; a <= 5; ++a) {
+        if (a == escolha1) continue;
+        restantes[idx++] = a;
     }
 
-    return 0;
-}
+    /* Exibe o segundo menu baseado no array 'restantes' */
+    int escolha2_idx = 0;
+    printf("\n===== MENU: Escolha o segundo atributo (diferente do primeiro) =====\n");
+    for (int i = 0; i < 4; ++i) {
+        printf("%d - %s\n", i + 1, nome_do_atributo(restantes[i]));
+    }
+    printf("Opcao (1-4): ");
+    if (scanf("%d", &escolha2_idx) != 1) { printf("Entrada invalida. Encerrando.\n"); return 1; }
+    if (escolha2_idx < 1 || escolha2_idx > 4) { printf("Opcao invalida. Encerrando.\n"); return 1; }
+
+    int escolha2 = restantes[escolha2_idx - 1]; // Mapear para atributo real (1..5)
+
+    /* --- Exibição do que foi escolhido --- */
+    printf("\nComparacao entre: %s e %s\n", c1.nome, c2.nome);
+    printf("Atributos escolhidos:\n");
+    printf("1) %s\n", nome_do_atributo(escolha1));
+    printf("2) %s\n\n", nome_do_atributo(escolha2));
+
+    /* --- Obter os valores dos atributos escolhidos para cada carta --- */
+    double valor1_attr1 = obter_valor_atributo(&c1, escolha1);
+    double valor2_attr1 = obter_valor_atributo(&c2, escolha1);
+
+    double valor1_attr2 = obter_valor_atributo(&c1, escolha2);
+    double valor2_attr2 = obter_valor_atributo(&c2, escolha2);
+
+    /* --- Comparações por atributo ---
+       Para densidade, menor valor vence; para os demais, maior vence.
+       Usamos if/else aninhados para deixar a lógica clara e explicita.
+    */
+
+    /* Resultado da comparação do primeiro atributo:
+       vence_atr1 = 1 => Carta 1 venceu; 2 => Carta 2 venceu; 0 => empate
+    */
+    int vence_atr1 = 0;
+    if (escolha1 == ATTR_DENSIDADE) {
+        if (valor1_attr1 < valor2_attr1) vence_atr1 = 1;
+        else if (valor2_attr1 < valor1_attr1) vence_atr1 = 2;
+        else vence_atr1 = 0;
+    } else {
+        if (valor1_attr1 > valor2_attr1) vence_atr1 = 1;
+        else if (valor2_attr1 > valor1_attr1) vence_atr1 = 2;
+        else vence_atr1 = 0;
+    }
+
+    /* Resultado da comparação do segundo atributo */
+    int vence_atr2 = 0;
+    if (escolha2 == ATTR_DENSIDADE) {
+        if (valor1_attr2 < valor2_attr2) vence_atr2 = 1;
+        else if (valor2_attr2 < valor1_attr2) vence_atr2 = 2;
+        else vence_at_
