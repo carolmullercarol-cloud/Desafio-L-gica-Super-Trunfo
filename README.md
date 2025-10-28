@@ -1,75 +1,80 @@
-🃏 Super Trunfo – Comparação de Cartas de Países 🌍
-Projeto desenvolvido para prática em linguagem C
+✅ README.md — Super Trunfo de Países (Desafio Avançado)
+🃏 Sobre o Projeto
 
-📌 Descrição do Projeto
-Este programa em C simula uma mecânica do jogo Super Trunfo, permitindo o cadastro de duas cartas de países e a comparação entre elas com base em atributos numéricos.
-O jogador escolhe no menu qual atributo deseja utilizar para a disputa. O programa então calcula e exibe qual carta venceu ou se houve empate.
-Este exercício faz parte da evolução de desafios da disciplina, trabalhando:
+Este projeto é a evolução dos desafios anteriores do Super Trunfo. Agora, o jogador poderá escolher dois atributos diferentes para comparar duas cartas de países, com menus dinâmicos, lógica diferenciada para densidade populacional e desempate pela soma dos atributos.
 
-✔ Entrada de dados com scanf
-✔ Cálculos numéricos (densidade demográfica e PIB per capita)
-✔ Estruturas condicionais if/else
-✔ Estrutura de seleção switch
-✔ Exibição organizada de resultados no terminal
+O jogo exibe claramente quem venceu cada atributo e o resultado final da rodada.
 
-🛠️ Tecnologias Utilizadas
-
-Linguagem C
-Compilador GCC (padrão sugerido)
-Terminal / Linha de comando
-
-▶️ Como Compilar
-No terminal, execute o comando abaixo dentro da pasta do projeto:
-gcc super_trunfo.c -o super_trunfo
-Se não houver erros, o arquivo executável será criado.
-
-🚀 Como Executar
-No Linux/macOS:
-./super_trunfo
-No Windows (PowerShell ou CMD):
-super_trunfo.exe
-
-🎮 Como Jogar
-Informe os dados da Carta 1
-Informe os dados da Carta 2
-O menu de comparação será exibido
-Escolha uma das opções digitando o número correspondente
-
-📋 Menu de Atributos
-O jogador poderá comparar as cartas utilizando um dos atributos abaixo:
-
-Opção	Atributo	Regra de Vitória
+📌 Atributos Disponíveis para Comparação
+Código	Atributo	Regra
 1	População	Maior vence
 2	Área (km²)	Maior vence
 3	PIB	Maior vence
-4	Pontos turísticos	Maior vence
-5	Densidade demográfica (hab/km²)	Menor vence ✅
+4	Pontos Turísticos	Maior vence
+5	Densidade Demográfica	Menor vence ✅
 
-📌 Exemplo de Uso do Menu
+🖥️ Como Compilar
+Você pode compilar com gcc:
+gcc super_trunfo_avancado.c -o super_trunfo_avancado
 
-===== MENU DE COMPARACAO =====
-Escolha o atributo que deseja comparar:
+▶️ Como Executar
+Após compilar, execute o programa com:
+./super_trunfo_avancado
+
+🎮 Como Jogar
+
+Cadastre as duas cartas preenchendo:
+Nome do país
+População
+Área (km²)
+PIB
+Pontos turísticos
+
+Escolha o primeiro atributo pelo menu (1–5)
+Escolha o segundo atributo, agora sem repetir o primeiro
+(menus dinâmicos)
+O programa executa:
+Comparação individual de cada atributo
+Regra especial para densidade demográfica
+Cálculo da soma dos dois atributos
+Definição do vencedor ou empate
+
+📌 Exemplo de uso do menu
+===== MENU: Escolha o primeiro atributo =====
 1 - Populacao
-2 - Area
+2 - Area (km2)
 3 - PIB
 4 - Pontos Turisticos
 5 - Densidade Demografica
-Opcao: 1
+Opcao (1-5): 3
 
-Exemplo de saída após escolha:
-Comparando Brasil e Argentina...
 
-Atributo: Populacao
-Brasil: 210000000 habitantes
-Argentina: 45000000 habitantes
-Resultado: Brasil venceu!
+Se escolher 3 (PIB) primeiro, o próximo menu será:
 
-🧑‍💻 Estrutura Pedagógica
-Este exercício faz parte da evolução lógica do Super Trunfo:
-Nível	- Funcionalidades
-Básico	Cadastro e exibição das cartas
-Intermediário	Cálculo de densidade populacional e PIB per capita
-Atual	Menu interativo com switch + comparações com if/else
+===== MENU: Escolha o segundo atributo =====
+1 - Populacao
+2 - Area (km2)
+3 - Pontos Turisticos
+4 - Densidade Demografica
+Opcao (1-4):
+
+✅ Regras de Vitória
+
+Para cada atributo escolhido:
+Atributos normais → maior vence
+Densidade populacional → menor vence
+A soma dos dois atributos define o vencedor da rodada
+Se a soma for igual → Empate!
+
+🧱 Requisitos Atendidos
+
+✔ Escolha de dois atributos diferentes
+✔ Menus com switch e opções dinâmicas
+✔ Operador ternário para exibição de vencedores
+✔ Cálculo e comparação por soma
+✔ Exibição detalhada e organizada do resultado
+✔ Tratamento de entradas inválidas
+✔ Código comentado e identado
 
 ✨ Autor(a)
 Projeto acadêmico desenvolvido por Caroline Paim Muller para prática em programação estruturada em C do curso de Gestão da Tecnologia da Informação
